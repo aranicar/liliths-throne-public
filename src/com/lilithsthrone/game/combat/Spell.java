@@ -1395,12 +1395,57 @@ public enum Spell {
 											"[npc.Name] focuses [npc.her] arcane energy on projecting an arousing vision into [npc2.namePos] mind!")
 								+"</p>");
 			
-			descriptionSB.append(getDamageDescription(caster, target, damage, isHit, isCritical));
+			//descriptionSB.append(getDamageDescription(caster, target, damage, isHit, isCritical));
+			
+			// you hit
+			// you critically hit
+			// you missed
+			/*if(target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX)) {
+				if(target.isPlayer()){
+					descriptionSB.append(
+							"<p>" +
+								"<b>You take " + (damage*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
+								+ damage + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as you struggle to control your burning desire for sex!</b>"
+							+ "</p>");
+					
+				} else {
+					descriptionSB.append(
+							UtilText.parse(target,
+							"<p>" +
+								"<b>[npc.Name] takes " + (damage*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
+								+ damage + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as [npc.she] struggles to control [npc.her] burning desire for sex!</b>"
+							+ "</p>"));
+					
+				}
+				
+				target.incrementHealth(-damage*2);
+				target.incrementMana(-damage);
+				
+			} else {
+				if(target.isPlayer()) {
+					descriptionSB.append(
+							"<p>" +
+								"<b>You gain " + damage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b>!"
+							+ "</p>");
+					
+				} else {
+					descriptionSB.append(
+							UtilText.parse(target,
+							"<p>" +
+								"<b>[npc.She] gains " + damage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b>!"
+							+ "</p>"));
+					
+				}
+				
+				target.incrementLust(damage);
+			}*/
 			
 			// If attack hits, apply damage and effects:
 			if (isHit) {
 				if(damage>0) {
-					descriptionSB.append(target.incrementLust(damage));
+					//descriptionSB.append(target.incrementLust(damage));
+					
+					dealLustDamage(caster, damage, target); // TODO
 				}
 				
 				if(caster.hasSpellUpgrade(SpellUpgrade.ARCANE_AROUSAL_2)) {
@@ -1409,6 +1454,12 @@ public enum Spell {
 					
 					applyStatusEffects(caster, target, isCritical);
 					descriptionSB.append(getStatusEffectApplication(caster, target, isHit, isCritical));
+				}
+			} else {
+				if (caster.isPlayer()) {
+					descriptionSB.append("<p>[style.italicsBad(You missed!)]</p>");
+				} else {
+					descriptionSB.append(UtilText.parse(caster, "<p>[style.italicsBad([npc1.Name] missed!)]</p>"));
 				}
 			}
 			
@@ -2374,6 +2425,46 @@ public enum Spell {
 		}
 	}
 
+	// Handle lust damage, replaces all target.incrementLust and thus, lustDamage should never equal 0
+	protected void dealLustDamage(GameCharacter caster, float damage, GameCharacter target) {
+		if(target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX)) {
+			if(target.isPlayer()){
+				descriptionSB.append(
+						"<b>You take " + (damage*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
+							+ damage + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as you struggle to control your burning desire for sex!</b>"
+						+ "</p>");
+				
+			} else {
+				descriptionSB.append(
+						UtilText.parse(target,
+							"<b>[npc.Name] takes " + (damage*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
+							+ damage + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as [npc.she] struggles to control [npc.her] burning desire for sex!</b>"
+						+ "</p>"));
+				
+			}
+			
+			target.incrementHealth(-damage*2);
+			target.incrementMana(-damage);
+			
+		} else {
+			if(target.isPlayer()) {
+				descriptionSB.append(
+							"<b>You gain " + damage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b>!"
+						+ "</p>");
+				
+			} else {
+				descriptionSB.append(
+						UtilText.parse(target,
+							"<b>[npc.She] gains " + damage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b>!"
+						+ "</p>"));
+				
+			}
+			
+			target.incrementLust(damage);
+		}
+		
+	}
+	
 	public abstract String applyEffect(GameCharacter caster, GameCharacter target, boolean isHit, boolean isCritical);
 
 	public List<String> getModifiersAsStringList() {

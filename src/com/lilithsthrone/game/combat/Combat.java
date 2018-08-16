@@ -1220,6 +1220,51 @@ public enum Combat {
 		return extraAttackEffectsSB.toString();
 	}
 	
+	// Handle lust damage, replaces all target.incrementLust and thus, lustDamage should never equal 0
+	private static void dealLustDamage(GameCharacter attacker, float lustDamage, GameCharacter target) {
+		if(target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX)) {
+			if(target.isPlayer()) {
+				attackStringBuilder.append(
+						"<b>You take " + (lustDamage*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
+						+ lustDamage + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as you struggle to control your burning desire for sex!</b><br/>"
+					+ "</p>");
+			
+			} else {
+				attackStringBuilder.append(
+					UtilText.parse(target,
+						"<b>[npc.Name] takes " + (lustDamage*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and " 
+						+ lustDamage + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as [npc.she] struggles to control [npc.her] burning desire for sex!</b><br/>"
+					+ "</p>"));
+				
+			}
+
+			target.incrementHealth(-lustDamage*2);
+			target.incrementMana(-lustDamage);
+			
+		} else {
+			if(attacker.isPlayer()) {
+				attackStringBuilder.append(
+					UtilText.parse(target,
+						"<b>[npc.Name] gains " + lustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as [npc.she] tries to resist your seductive display!</b><br/>"
+					+ "</p>"));
+				
+			} else if(target.isPlayer()) {
+				attackStringBuilder.append(
+					UtilText.parse(attacker,
+						"<b>You gain " + lustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as you try to resist [npc.her] seductive display!</b><br/>"
+					+ "</p>"));
+				
+			} else {
+				attackStringBuilder.append(
+					UtilText.parse(attacker, target,
+						"<b>[npc2.Name] gains " + lustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as [npc2.she] tries to resist [npc1.namePos] seductive display!</b><br/>"
+					+ "</p>"));
+			}
+			
+			target.incrementLust(lustDamage);
+		}
+	}
+	
 	// Calculations for seduction attack:
 	private static void attackSeduction(GameCharacter attacker) {
 		GameCharacter target = getTargetedCombatant(attacker);
@@ -1239,85 +1284,18 @@ public enum Combat {
 				attackStringBuilder.append(UtilText.parse(target,"<p>[npc.Name] appears to be completely [style.boldExcellent(immune)] to "+DamageType.LUST.getName()+" damage!</p>"));
 			}
 			
-		} else if(target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX)) {
-			if(attacker.isPlayer()) {
-				attackStringBuilder.append(UtilText.parse(target,
-						"<p>"
-							+ (critical
-									? "Your seductive display was [style.boldExcellent(extremely effective)]!<br/>"
-									: "")
-							+ (lustDamage > 0
-									? "<b>[npc.Name] takes " + (lustDamage*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b>"
-											+ " and "+lustDamage+" <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as [npc.she] struggles to control [npc.her] burning desire for sex!</b><br/>"
-									: "")
-						+ "</p>"));
-				
-			} else if(target.isPlayer()) {
-				attackStringBuilder.append(UtilText.parse(attacker,
-						"<p>"
-							+ (critical
-									? "[npc.Her] seductive display was [style.boldExcellent(extremely effective)]!<br/>"
-									: "")
-							+ (lustDamage > 0
-									? "<b>You take " + (lustDamage*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b>"
-										+ " and "+lustDamage+" <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as you struggle to control your burning desire for sex!</b><br/>"
-									: "")
-						+ "</p>"));
-				
-			} else {
-				attackStringBuilder.append(UtilText.parse(attacker, target,
-						"<p>"
-							+ (critical
-									? "[npc1.Her] seductive display was [style.boldExcellent(extremely effective)]!<br/>"
-									: "")
-							+ (lustDamage > 0
-									? "<b>[npc2.Name] takes " + (lustDamage*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b>"
-										+ " and "+lustDamage+" <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as [npc2.she] struggles to control [npc2.her] burning desire for sex!</b><br/>"
-									: "")
-						+ "</p>"));
-			}
-
-			target.incrementHealth(-lustDamage*2);
-			target.incrementMana(-lustDamage);
-			
-		} else {
-			if(attacker.isPlayer()) {
-				attackStringBuilder.append(UtilText.parse(target,
-						"<p>"
-							+ (critical
-									? "Your seductive display was [style.boldExcellent(extremely effective)]!<br/>"
-									: "")
-							+ (lustDamage > 0
-									? "<b>[npc.Name] gains " + lustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as [npc.she] tries to resist your seductive display!</b><br/>"
-									: "")
-						+ "</p>"));
-				
-			} else if(target.isPlayer()) {
-				attackStringBuilder.append(UtilText.parse(attacker,
-						"<p>"
-							+ (critical
-									? "[npc.Her] seductive display was [style.boldExcellent(extremely effective)]!<br/>"
-									: "")
-							+ (lustDamage > 0
-									? "<b>You gain " + lustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as you try to resist [npc.her] seductive display!</b><br/>"
-									: "")
-						+ "</p>"));
-				
-			} else {
-				attackStringBuilder.append(UtilText.parse(attacker, target,
-						"<p>"
-							+ (critical
-									? "[npc1.Her] seductive display was [style.boldExcellent(extremely effective)]!<br/>"
-									: "")
-							+ (lustDamage > 0
-									? "<b>[npc2.Name] gains " + lustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as [npc2.she] tries to resist [npc1.namePos] seductive display!</b><br/>"
-									: "")
-						+ "</p>"));
+		} else { // build first part of message
+			if(critical) {
+				if(attacker.isPlayer()) {
+					attackStringBuilder.append("<p>Your seductive display was [style.boldExcellent(extremely effective)]!<br/>");
+				} else {
+					attackStringBuilder.append(UtilText.parse(attacker, "<p>[npc.Her] seductive display was [style.boldExcellent(extremely effective)]!<br/>"));
+				}
 			}
 			
-			target.incrementLust(lustDamage);
+			dealLustDamage(attacker, lustDamage, target);
 		}
-		
+			
 		if(attacker.hasStatusEffect(StatusEffect.TELEPATHIC_COMMUNICATION_POWER_OF_SUGGESTION)) {
 			target.addStatusEffect(StatusEffect.TELEPATHIC_COMMUNICATION_POWER_OF_SUGGESTION_TARGETED, 3);
 			attackStringBuilder.append(Spell.getBasicStatusEffectApplication(target, false, Util.newHashMapOfValues(new Value<>(StatusEffect.TELEPATHIC_COMMUNICATION_POWER_OF_SUGGESTION_TARGETED, 2))));
@@ -1686,7 +1664,7 @@ public enum Combat {
 					+ "</b> <b>damage</b><br/><br/>");
 		}
 
-		attackDescriptionSB.append("Main and offhand attacks <b style='color:" + Colour.GENERIC_GOOD.toWebHexString() + ";'>have a base 100% accuracy</b>.");
+		attackDescriptionSB.append("Main attacks <b style='color:" + Colour.GENERIC_GOOD.toWebHexString() + ";'>have a base 100% accuracy</b>.");
 		
 		return attackDescriptionSB.toString();
 	}
@@ -1709,7 +1687,7 @@ public enum Combat {
 					+ "</b> <b>damage</b><br/><br/>");
 		}
 
-		attackDescriptionSB.append("Main and offhand attacks <b style='color:" + Colour.GENERIC_GOOD.toWebHexString() + ";'>have a base 100% accuracy</b>.");
+		attackDescriptionSB.append("Offhand attacks <b style='color:" + Colour.GENERIC_GOOD.toWebHexString() + ";'>have a base 100% accuracy</b>.");
 		
 		return attackDescriptionSB.toString();
 	}
@@ -1737,7 +1715,7 @@ public enum Combat {
 					+ "</b> <b>damage</b><br/>");
 		}
 
-		attackDescriptionSB.append("Dual strikes have a <b>halved</b> <b style='color:" + Colour.GENERIC_COMBAT.toWebHexString() + ";'>chance of hitting</b>.");
+		attackDescriptionSB.append("Dual strikes have a <b style='color:" + Colour.GENERIC_COMBAT.toWebHexString() + ";'>halved chance of hitting</b>.");
 		
 		return attackDescriptionSB.toString();
 	}
