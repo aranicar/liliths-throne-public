@@ -1686,7 +1686,7 @@ public enum Combat {
 					+ "</b> <b>damage</b><br/><br/>");
 		}
 
-		attackDescriptionSB.append("Main and offhand attacks <b style='color:" + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>always hit</b>.");
+		attackDescriptionSB.append("Main and offhand attacks <b style='color:" + Colour.GENERIC_GOOD.toWebHexString() + ";'>have a base 100% accuracy</b>.");
 		
 		return attackDescriptionSB.toString();
 	}
@@ -1709,7 +1709,7 @@ public enum Combat {
 					+ "</b> <b>damage</b><br/><br/>");
 		}
 
-		attackDescriptionSB.append("Main and offhand attacks <b style='color:" + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>always hit</b>.");
+		attackDescriptionSB.append("Main and offhand attacks <b style='color:" + Colour.GENERIC_GOOD.toWebHexString() + ";'>have a base 100% accuracy</b>.");
 		
 		return attackDescriptionSB.toString();
 	}
@@ -1737,7 +1737,7 @@ public enum Combat {
 					+ "</b> <b>damage</b><br/>");
 		}
 
-		attackDescriptionSB.append("You have a <b>50%</b> <b style='color:" + Colour.GENERIC_COMBAT.toWebHexString() + ";'>chance to hit</b>.");
+		attackDescriptionSB.append("Dual strikes have a <b>halved</b> <b style='color:" + Colour.GENERIC_COMBAT.toWebHexString() + ";'>chance of hitting</b>.");
 		
 		return attackDescriptionSB.toString();
 	}
