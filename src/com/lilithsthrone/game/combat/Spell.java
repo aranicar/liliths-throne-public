@@ -1395,57 +1395,36 @@ public enum Spell {
 											"[npc.Name] focuses [npc.her] arcane energy on projecting an arousing vision into [npc2.namePos] mind!")
 								+"</p>");
 			
-			//descriptionSB.append(getDamageDescription(caster, target, damage, isHit, isCritical));
-			
-			// you hit
-			// you critically hit
-			// you missed
-			/*if(target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX)) {
-				if(target.isPlayer()){
-					descriptionSB.append(
-							"<p>" +
-								"<b>You take " + (damage*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
-								+ damage + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as you struggle to control your burning desire for sex!</b>"
-							+ "</p>");
-					
-				} else {
-					descriptionSB.append(
-							UtilText.parse(target,
-							"<p>" +
-								"<b>[npc.Name] takes " + (damage*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
-								+ damage + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as [npc.she] struggles to control [npc.her] burning desire for sex!</b>"
-							+ "</p>"));
-					
-				}
-				
-				target.incrementHealth(-damage*2);
-				target.incrementMana(-damage);
-				
-			} else {
-				if(target.isPlayer()) {
-					descriptionSB.append(
-							"<p>" +
-								"<b>You gain " + damage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b>!"
-							+ "</p>");
-					
-				} else {
-					descriptionSB.append(
-							UtilText.parse(target,
-							"<p>" +
-								"<b>[npc.She] gains " + damage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b>!"
-							+ "</p>"));
-					
-				}
-				
-				target.incrementLust(damage);
-			}*/
-			
 			// If attack hits, apply damage and effects:
 			if (isHit) {
-				if(damage>0) {
-					//descriptionSB.append(target.incrementLust(damage));
+				if(damage==0) {
+					if(target.isPlayer()) {
+						descriptionSB.append(
+								UtilText.parse(caster, 
+								"<p>"
+									+ "You completely [style.boldExcellent(resist)] [npc.namepos] arousing visions; "
+									+ "however, [style.italicsBad(you are still affected by the spell's effects!)]"
+								+ "</p>"));
+					} else {
+						descriptionSB.append(UtilText.parse(target, caster,
+								"<p>"
+									+ "[npc1.Name] appears to completely [style.boldExcellent(resist)] [npc2.namepos] arousing visions; "
+									+ "however, [style.italicsBad([npc1.she] is still affected by the spell's effects!)]"
+								+ "</p>"));
+					}
 					
-					dealLustDamage(caster, damage, target); // TODO
+				} else { // build first part of description
+					descriptionSB.append("<p>");
+					
+					if(isCritical) {
+						if(caster.isPlayer()) {
+							descriptionSB.append("Your arousing vision was [style.boldExcellent(extremely effective)]!<br/>");
+						} else {
+							descriptionSB.append(UtilText.parse(caster, "[npc.Her] arousing vision was [style.boldExcellent(extremely effective)]!<br/>"));
+						}
+					}
+					
+					dealLustDamage(caster, damage, target); // build last part of description
 				}
 				
 				if(caster.hasSpellUpgrade(SpellUpgrade.ARCANE_AROUSAL_2)) {
@@ -1462,7 +1441,6 @@ public enum Spell {
 					descriptionSB.append(UtilText.parse(caster, "<p>[style.italicsBad([npc1.Name] missed!)]</p>"));
 				}
 			}
-			
 			
 			descriptionSB.append(getCostDescription(caster, cost));
 			caster.incrementMana(-cost);
