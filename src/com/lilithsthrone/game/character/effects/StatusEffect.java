@@ -71,7 +71,7 @@ import com.lilithsthrone.world.places.PlaceType;
  * @author Innoxia
  */
 public enum StatusEffect {
-
+// TODO go through and find all DAMAGE_LUST.getColouredName and replace with gain lust instead of taking lust damage
 	// Attribute-related status effects:
 	// Strength:
 	PHYSIQUE_PERK_0(
@@ -9755,10 +9755,10 @@ public enum StatusEffect {
 			target.incrementLust(damage);
 
 			if (target.isPlayer()) {
-				return "You gain <b>" + damage + "</b> <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust as your mind is filled with arousing thoughts!</b>";
+				return "You gain <b>" + damage + "</b> <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as your mind is filled with arousing thoughts!";
 				
 			} else {
-				return "[npc.Name] gains <b>" + damage + "</b> <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust as [npc.namepos] mind is filled with arousing thoughts!</b>";
+				return "[npc.Name] gains <b>" + damage + "</b> <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as [npc.namepos] mind is filled with arousing thoughts!";
 			}
 		}
 		
@@ -9802,10 +9802,10 @@ public enum StatusEffect {
 			target.incrementLust(damage);
 
 			if (target.isPlayer()) {
-				return "You gain <b>" + damage + "</b> <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust as your mind is filled with arousing thoughts!</b>";
+				return "You gain <b>" + damage + "</b> <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as your mind is filled with arousing thoughts!";
 				
 			} else {
-				return "[npc.Name] gains <b>" + damage + "</b> <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust as [npc.namepos] mind is filled with arousing thoughts!</b>";
+				return "[npc.Name] gains <b>" + damage + "</b> <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as [npc.namepos] mind is filled with arousing thoughts!";
 			}
 		}
 		
