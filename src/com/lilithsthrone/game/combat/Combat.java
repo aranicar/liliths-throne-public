@@ -978,26 +978,18 @@ public enum Combat {
 			}
 			
 		} else if(isHit) {
+			
+			Attribute damageAttribute = dt.getMultiplierAttribute();
+			
 			if(attacker.isPlayer()) {
-				if(attacker.getMainWeapon() == null) {
-					attackStringBuilder.append("<p><b>You " + (critical ? "<b style='color: " + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>critically</b> hit for " : " hit for ") + damage + " <b style='color: "
-							+ dt.getColour().toWebHexString() + ";'>" + dt.getName() + "</b>!</b></p>");
-					
-				} else {
-					attackStringBuilder.append("<p><b>You " + (critical ? "<b style='color: " + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>critically</b> hit for " : " hit for ") + damage + " <b style='color: "
-							+ dt.getMultiplierAttribute().getColour().toWebHexString() + ";'>" + dt.getMultiplierAttribute().getName() + "</b>!</b></p>");
-				}
+				attackStringBuilder.append("<p><b>You " + (critical ? "<b style='color: " + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>critically</b> hit for " : "hit for ") + damage + " " 
+						+ damageAttribute.getColouredName("b") + "!</b></p>");
+				
 			} else {
-				if(attacker.getMainWeapon() == null) {
-					attackStringBuilder.append("<p><b>"+(target.isPlayer()?"You were ":UtilText.parse(target,"[npc.Name] was "))
-							+ (critical ? "<b style='color: " + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>critically</b> hit for " : " hit for ") + damage + " <b style='color: "
-							+ dt.getColour().toWebHexString() + ";'>" + dt.getName() + "</b>!</b></p>");
-					
-				} else {
-					attackStringBuilder.append("<p><b>"+(target.isPlayer()?"You were ":UtilText.parse(target,"[npc.Name] was "))
-							+ (critical ? "<b style='color: " + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>critically</b> hit for " : " hit for ") + damage + " <b style='color: "
-							+ dt.getMultiplierAttribute().getColour().toWebHexString() + ";'>" + dt.getMultiplierAttribute().getName() + "</b>!</b></p>");
-				}
+				attackStringBuilder.append("<p><b>"+(target.isPlayer()?"You were ":UtilText.parse(target,"[npc.Name] was "))
+						+ (critical ? "<b style='color: " + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>critically</b> hit for " : "hit for ") + damage + " " 
+						+ damageAttribute.getColouredName("b") + "!</b></p>");
+				
 			}
 			attackStringBuilder.append(target.incrementHealth(attacker, -damage));
 		}
@@ -1050,12 +1042,12 @@ public enum Combat {
 	
 			if(attacker.isPlayer()) {
 				attackStringBuilder.append("<p>"
-						+ "<b>You " + (critical ? "<b style='color: " + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>critically</b> " : "") +"hit for "+ damage + " <b style='color: "
-						+ damageAttribute.getColour().toWebHexString() + ";'>" + damageAttribute.getName() + "</b>!</b></p>");
+						+ "<b>You " + (critical ? "<b style='color: " + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>critically</b> " : "") +"hit for "+ damage + " " 
+						+ damageAttribute.getColouredName("b") + "!</b></p>");
 			} else {
 				attackStringBuilder.append("<p>"
-						+ "<b>"+(target.isPlayer()?"You were ":UtilText.parse(target,"[npc.Name] was ")) + (critical ? "<b style='color: " + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>critically</b> " : "") +"hit for "+ damage + " <b style='color: "
-						+ damageAttribute.getColour().toWebHexString() + ";'>" + damageAttribute.getName() + "</b>!</b></p>");
+						+ "<b>"+(target.isPlayer()?"You were ":UtilText.parse(target,"[npc.Name] was ")) + (critical ? "<b style='color: " + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>critically</b> " : "") +"hit for "+ damage + " " 
+						+ damageAttribute.getColouredName("b") + "!</b></p>");
 			}
 	
 			attackStringBuilder.append(target.incrementHealth(attacker, -damage));
@@ -1284,16 +1276,18 @@ public enum Combat {
 				attackStringBuilder.append(UtilText.parse(target,"<p>[npc.Name] appears to be completely [style.boldExcellent(immune)] to "+DamageType.LUST.getName()+" damage!</p>"));
 			}
 			
-		} else { // build first part of message
+		} else { // build first part of description
+			attackStringBuilder.append("<p>");
+			
 			if(critical) {
 				if(attacker.isPlayer()) {
-					attackStringBuilder.append("<p>Your seductive display was [style.boldExcellent(extremely effective)]!<br/>");
+					attackStringBuilder.append("Your seductive display was [style.boldExcellent(extremely effective)]!<br/>");
 				} else {
-					attackStringBuilder.append(UtilText.parse(attacker, "<p>[npc.Her] seductive display was [style.boldExcellent(extremely effective)]!<br/>"));
+					attackStringBuilder.append(UtilText.parse(attacker, "[npc.Her] seductive display was [style.boldExcellent(extremely effective)]!<br/>"));
 				}
 			}
 			
-			dealLustDamage(attacker, lustDamage, target);
+			dealLustDamage(attacker, lustDamage, target); // build last part of description
 		}
 			
 		if(attacker.hasStatusEffect(StatusEffect.TELEPATHIC_COMMUNICATION_POWER_OF_SUGGESTION)) {

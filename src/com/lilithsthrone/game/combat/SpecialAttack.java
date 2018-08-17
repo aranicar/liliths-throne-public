@@ -2393,7 +2393,7 @@ public enum SpecialAttack {
 				descriptionSB.append(UtilText.parse(target,"<p>[npc.Name] appears to be completely [style.boldExcellent(immune)] to "+DamageType.LUST.getName()+" damage!</p>"));
 			}
 			
-		} else {
+		} else { // build first part of description
 			if(caster.isPlayer()) {
 				if(critical) {
 					descriptionSB.append(
@@ -2440,7 +2440,7 @@ public enum SpecialAttack {
 				}	
 			}
 			
-			dealLustDamage(caster, damage, target);
+			dealLustDamage(caster, damage, target); // build last part of description
 		}
 		
 		Combat.setCooldown(caster, this, this.getCooldown()+1);

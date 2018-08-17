@@ -505,7 +505,7 @@ public enum Attack {
 			
 			// Modifiers based on level:
 			float levelBoost = (attacker.getLevel() - defender.getLevel())*2;
-			levelBoost = Util.getModifiedDropoffValue(levelBoost, 100)/100f;
+			levelBoost = Util.getModifiedDropoffValue(levelBoost, 100)/100f; // this is so insanely small does it even effect gameplay?
 			damage = damage * (1 + (levelBoost/100));
 		}
 		
