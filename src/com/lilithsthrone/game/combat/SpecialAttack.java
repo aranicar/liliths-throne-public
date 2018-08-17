@@ -2359,13 +2359,13 @@ public enum SpecialAttack {
 		} else {
 			if(target.isPlayer()) {
 				descriptionSB.append(
-							"<b>You gain " + damage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b>!"
+							"<b>You gain " + damage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust!</b>"
 						+ "</p>");
 				
 			} else {
 				descriptionSB.append(
 						UtilText.parse(target,
-							"<b>[npc.She] gains " + damage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b>!"
+							"<b>[npc.She] gains " + damage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust!</b>"
 						+ "</p>"));
 				
 			}

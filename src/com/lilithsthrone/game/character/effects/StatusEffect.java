@@ -9755,10 +9755,10 @@ public enum StatusEffect {
 			target.incrementLust(damage);
 
 			if (target.isPlayer()) {
-				return "You take <b>" + damage + "</b> "+Attribute.DAMAGE_LUST.getColouredName("b")+"!";
+				return "You gain <b>" + damage + "</b> <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust as your mind is filled with arousing thoughts!</b>";
 				
 			} else {
-				return "[npc.Name] takes <b>" + damage + "</b> "+Attribute.DAMAGE_LUST.getColouredName("b")+"!";
+				return "[npc.Name] gains <b>" + damage + "</b> <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust as [npc.namepos] mind is filled with arousing thoughts!</b>";
 			}
 		}
 		
@@ -9802,10 +9802,10 @@ public enum StatusEffect {
 			target.incrementLust(damage);
 
 			if (target.isPlayer()) {
-				return "You take <b>" + damage + "</b> "+Attribute.DAMAGE_LUST.getColouredName("b")+"!";
+				return "You gain <b>" + damage + "</b> <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust as your mind is filled with arousing thoughts!</b>";
 				
 			} else {
-				return "[npc.Name] takes <b>" + damage + "</b> "+Attribute.DAMAGE_LUST.getColouredName("b")+"!";
+				return "[npc.Name] gains <b>" + damage + "</b> <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust as [npc.namepos] mind is filled with arousing thoughts!</b>";
 			}
 		}
 		
