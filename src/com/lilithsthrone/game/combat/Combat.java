@@ -970,25 +970,26 @@ public enum Combat {
 					?attacker.getBodyMaterial().getUnarmedDamageType()
 					:attacker.getMainWeapon().getDamageType());
 		
+		Attribute damageAttribute = dt.getMultiplierAttribute();
+		
 		if(damage==0) {
 			if(target.isPlayer()) {
-				attackStringBuilder.append("<p>You are completely [style.boldExcellent(immune)] to "+dt.getName()+" damage!</p>");
+				attackStringBuilder.append("<p>You are completely [style.boldExcellent(immune)] to " + damageAttribute.getColouredName("b") + "!</p>");
 			} else {
-				attackStringBuilder.append(UtilText.parse(target,"<p>[npc.Name] appears to be completely [style.boldExcellent(immune)] to "+dt.getName()+" damage!</p>"));
+				attackStringBuilder.append(UtilText.parse(target,
+						"<p>[npc.Name] appears to be completely [style.boldExcellent(immune)] to " + damageAttribute.getColouredName("b") + "!</p>"));
 			}
 			
 		} else if(isHit) {
-			
-			Attribute damageAttribute = dt.getMultiplierAttribute();
-			
 			if(attacker.isPlayer()) {
-				attackStringBuilder.append("<p><b>You " + (critical ? "<b style='color: " + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>critically</b> hit for " : "hit for ") + damage + " " 
-						+ damageAttribute.getColouredName("b") + "!</b></p>");
+				attackStringBuilder.append("<p><b>You " 
+						+ (critical ? "<b style='color: " + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>critically</b> hit for " : "hit for ") 
+						+ damage + " " + damageAttribute.getColouredName("b") + "!</b></p>");
 				
 			} else {
-				attackStringBuilder.append("<p><b>"+(target.isPlayer()?"You were ":UtilText.parse(target,"[npc.Name] was "))
-						+ (critical ? "<b style='color: " + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>critically</b> hit for " : "hit for ") + damage + " " 
-						+ damageAttribute.getColouredName("b") + "!</b></p>");
+				attackStringBuilder.append("<p><b>" + (target.isPlayer() ? "You were " : UtilText.parse(target,"[npc.Name] was "))
+						+ (critical ? "<b style='color: " + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>critically</b> hit for " : "hit for ") 
+						+ damage + " " + damageAttribute.getColouredName("b") + "!</b></p>");
 				
 			}
 			attackStringBuilder.append(target.incrementHealth(attacker, -damage));
@@ -1028,26 +1029,28 @@ public enum Combat {
 		DamageType dt = (attacker.getOffhandWeapon() == null
 				?attacker.getBodyMaterial().getUnarmedDamageType()
 				:attacker.getOffhandWeapon().getDamageType());
+		
+		Attribute damageAttribute = dt.getMultiplierAttribute();
 	
 		if(damage==0) {
 			if(target.isPlayer()) {
-				attackStringBuilder.append("<p>You are completely [style.boldExcellent(immune)] to "+dt.getName()+" damage!</p>");
+				attackStringBuilder.append("<p>You are completely [style.boldExcellent(immune)] to " + damageAttribute.getColouredName("b") + "!</p>");
 			} else {
-				attackStringBuilder.append(UtilText.parse(target,"<p>[npc.Name] appears to be completely [style.boldExcellent(immune)] to "+dt.getName()+" damage!</p>"));
+				attackStringBuilder.append(UtilText.parse(target,
+						"<p>[npc.Name] appears to be completely [style.boldExcellent(immune)] to " + damageAttribute.getColouredName("b") + "!</p>"));
 			}
 			
 		} else if(isHit) {
-			
-			Attribute damageAttribute = dt.getMultiplierAttribute();
 	
 			if(attacker.isPlayer()) {
-				attackStringBuilder.append("<p>"
-						+ "<b>You " + (critical ? "<b style='color: " + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>critically</b> " : "") +"hit for "+ damage + " " 
-						+ damageAttribute.getColouredName("b") + "!</b></p>");
+				attackStringBuilder.append("<p><b>You " 
+						+ (critical ? "<b style='color: " + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>critically</b> " : "") + "hit for "
+						+ damage + " " + damageAttribute.getColouredName("b") + "!</b></p>");
+				
 			} else {
-				attackStringBuilder.append("<p>"
-						+ "<b>"+(target.isPlayer()?"You were ":UtilText.parse(target,"[npc.Name] was ")) + (critical ? "<b style='color: " + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>critically</b> " : "") +"hit for "+ damage + " " 
-						+ damageAttribute.getColouredName("b") + "!</b></p>");
+				attackStringBuilder.append("<p><b>" + (target.isPlayer() ? "You were " : UtilText.parse(target,"[npc.Name] was ")) 
+						+ (critical ? "<b style='color: " + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>critically</b> " : "") + "hit for " 
+						+ damage + " " + damageAttribute.getColouredName("b") + "!</b></p>");
 			}
 	
 			attackStringBuilder.append(target.incrementHealth(attacker, -damage));
@@ -1093,6 +1096,7 @@ public enum Combat {
 			Attribute damageMainAttribute = (attacker.getMainWeapon() == null ? attacker.getBodyMaterial().getUnarmedDamageType().getMultiplierAttribute() : attacker.getMainWeapon().getDamageType().getMultiplierAttribute()),
 					damageOffhandAttribute = (attacker.getOffhandWeapon() == null ? attacker.getBodyMaterial().getUnarmedDamageType().getMultiplierAttribute() : attacker.getOffhandWeapon().getDamageType().getMultiplierAttribute());
 			
+			// mini-TODO doesn't have immune to damage text (probably not possible with current mechanics so very low priority)
 			attackStringBuilder.append("<p>"
 					+ "<b>"+(attacker.isPlayer()?"You ":UtilText.parse(attacker,"[npc.Name] ")) + (critical ? "<b style='color: " + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>critically</b> " : "")
 					+(attacker.isPlayer()?"hit":"hits")+" for "
@@ -1271,9 +1275,11 @@ public enum Combat {
 		
 		if(lustDamage==0) {
 			if(target.isPlayer()) {
-				attackStringBuilder.append("<p>You are completely [style.boldExcellent(immune)] to "+DamageType.LUST.getName()+" damage!</p>");
+				attackStringBuilder.append(UtilText.parse(attacker,
+						"<p>You completely [style.boldExcellent(resist)] [npc.namepos] seductive display!</p>"));
 			} else {
-				attackStringBuilder.append(UtilText.parse(target,"<p>[npc.Name] appears to be completely [style.boldExcellent(immune)] to "+DamageType.LUST.getName()+" damage!</p>"));
+				attackStringBuilder.append(UtilText.parse(target, attacker,
+						"<p>[npc1.Name] appears to completely [style.boldExcellent(resist)] [npc2.namepos] seductive display!</p>"));
 			}
 			
 		} else { // build first part of description
