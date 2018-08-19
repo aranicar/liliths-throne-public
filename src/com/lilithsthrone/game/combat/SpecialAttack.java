@@ -2275,11 +2275,11 @@ public enum SpecialAttack {
 		
 		if (caster == Main.game.getPlayer()) {
 			if (isCritical)
-				descriptionSB.append("<p>" + (isHit ? "<b>You <b style='color: " + Colour.CLOTHING_GOLD.toWebHexString() + ";'>critically</b> hit for " + damage + " <b style='color: " + damageType.getMultiplierAttribute().getColour().toWebHexString() + ";'>"
-						+ damageType.getName() + "</b>" + "!</b>" : "<b>You missed!</b>") + "</p>");
+				descriptionSB.append("<p>" + (isHit ? "<b>You <b style='color: " + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>critically</b> hit for " + damage + " " + damageType.getMultiplierAttribute().getColouredName("b") + "!</b>" 
+						: "<b>You miss!</b>") + "</p>");
 			else
-				descriptionSB.append(
-						"<p>" + (isHit ? "<b>You did " + damage + " <b style='color: " + damageType.getMultiplierAttribute().getColour().toWebHexString() + ";'>" + damageType.getName() + "</b>" + "!</b>" : "<b>You missed!</b>") + "</p>");
+				descriptionSB.append("<p>" + (isHit ? "<b>You deal " + damage + " " + damageType.getMultiplierAttribute().getColouredName("b") + "!</b>" 
+						: "<b>You miss!</b>") + "</p>");
 
 			if (statusEffects != null && isHit) {
 				descriptionSB.append(UtilText.parse(target, "<p>[npc.She] is now suffering "));
@@ -2303,14 +2303,14 @@ public enum SpecialAttack {
 
 		} else {
 			if (isCritical)
-				descriptionSB.append("<p>" + (isHit ? "<b>You were <b style='color: " + Colour.CLOTHING_GOLD.toWebHexString() + ";'>critically</b> hit for " + damage + " <b style='color: " + damageType.getMultiplierAttribute().getColour().toWebHexString()
-						+ ";'>" + damageType.getName() + "</b>" + " damage!</b>" : "<b>" + caster.getName("The") + " missed!</b>") + "</p>");
+				descriptionSB.append("<p>" + (isHit ? "<b>" + (target.isPlayer() ? "You get " : UtilText.parse(target, "[npc.Name] gets ")) + "<b style='color: " + Colour.GENERIC_EXCELLENT.toWebHexString() + ";'>critically</b> hit for " + damage + " " + damageType.getMultiplierAttribute().getColouredName("b") + "!</b>"
+						: "<b>" + caster.getName("The") + " misses!</b>") + "</p>");
 			else
-				descriptionSB.append("<p>" + (isHit ? "<b>You took " + damage + " <b style='color: " + damageType.getMultiplierAttribute().getColour().toWebHexString() + ";'>" + damageType.getName() + "</b>" + " damage!</b>"
-						: "<b>" + caster.getName("The") + " missed!</b>") + "</p>");
+				descriptionSB.append("<p>" + (isHit ? "<b>" + (target.isPlayer() ? "You get " : UtilText.parse(target, "[npc.Name] gets ")) + "hit for " + damage + " " + damageType.getMultiplierAttribute().getColouredName("b") + "!</b>"
+						: "<b>" + caster.getName("The") + " misses!</b>") + "</p>");
 
 			if (statusEffects != null && isHit) {
-				descriptionSB.append("<p>You are now suffering ");
+				descriptionSB.append("<p>" + (target.isPlayer() ? "You are " : UtilText.parse(target, "[npc.She] is ")) + "now suffering ");
 				int i = 0;
 				for (Entry<StatusEffect, Integer> seEntry : statusEffects.entrySet()) {
 					if (i != 0) {

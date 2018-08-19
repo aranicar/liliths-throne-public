@@ -1418,9 +1418,9 @@ public enum Spell {
 					
 					if(isCritical) {
 						if(caster.isPlayer()) {
-							descriptionSB.append("Your arousing vision was [style.boldExcellent(extremely effective)]!<br/>");
+							descriptionSB.append("Your arousing vision is [style.boldExcellent(extremely effective)]!<br/>");
 						} else {
-							descriptionSB.append(UtilText.parse(caster, "[npc.Her] arousing vision was [style.boldExcellent(extremely effective)]!<br/>"));
+							descriptionSB.append(UtilText.parse(caster, "[npc.Her] arousing vision is [style.boldExcellent(extremely effective)]!<br/>"));
 						}
 					}
 					
@@ -1436,9 +1436,9 @@ public enum Spell {
 				}
 			} else {
 				if (caster.isPlayer()) {
-					descriptionSB.append("<p>[style.italicsBad(You missed!)]</p>");
+					descriptionSB.append("<p>[style.italicsBad(You miss!)]</p>");
 				} else {
-					descriptionSB.append(UtilText.parse(caster, "<p>[style.italicsBad([npc1.Name] missed!)]</p>"));
+					descriptionSB.append(UtilText.parse(caster, "<p>[style.italicsBad([npc1.Name] misses!)]</p>"));
 				}
 			}
 			
@@ -2571,7 +2571,7 @@ public enum Spell {
 			if (caster.isPlayer()) {
 				if (isCritical) {
 					if(!isHit) {
-						damageCostDescriptionSB.append("[style.italicsBad(You missed!)]");
+						damageCostDescriptionSB.append("[style.italicsBad(You miss!)]");
 					} else {
 						if(damage>0) {
 							damageCostDescriptionSB.append(UtilText.parse(target,
@@ -2583,7 +2583,7 @@ public enum Spell {
 					}
 				} else {
 					if(!isHit) {
-						damageCostDescriptionSB.append("[style.italicsBad(You missed!)]");
+						damageCostDescriptionSB.append("[style.italicsBad(You miss!)]");
 					} else {
 						if(damage>0) {
 							damageCostDescriptionSB.append(UtilText.parse(target,
@@ -2595,7 +2595,7 @@ public enum Spell {
 			} else {
 				if (isCritical) {
 					if(!isHit) {
-						damageCostDescriptionSB.append(UtilText.parse(caster, "[style.italicsBad([npc1.Name] missed!)]"));
+						damageCostDescriptionSB.append(UtilText.parse(caster, "[style.italicsBad([npc1.Name] misses!)]"));
 					} else {
 						if(damage>0) {
 							damageCostDescriptionSB.append(UtilText.parse(caster, target,
@@ -2607,7 +2607,7 @@ public enum Spell {
 					}
 				} else {
 					if(!isHit) {
-						damageCostDescriptionSB.append(UtilText.parse(caster, "[style.italicsBad([npc1.Name] missed!)]"));
+						damageCostDescriptionSB.append(UtilText.parse(caster, "[style.italicsBad([npc1.Name] misses!)]"));
 					} else {
 						if(damage>0) {
 							damageCostDescriptionSB.append(UtilText.parse(caster, target,

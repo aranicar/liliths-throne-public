@@ -1105,7 +1105,7 @@ public enum Combat {
 		} else {
 			isHit = false;
 			attackStringBuilder.append(getDualDescription(attacker, target, false));
-			attackStringBuilder.append("<p><b>"+(attacker.isPlayer()?"You ":UtilText.parse(attacker,"[npc.Name] "))+"missed!</b></p>");
+			attackStringBuilder.append("<p><b>"+(attacker.isPlayer()?"You miss":UtilText.parse(attacker,"[npc.Name] misses"))+"!</b></p>");
 		}
 		
 		attackStringBuilder.append(target.incrementHealth(attacker, -(damageMain+damageOffhand)));
