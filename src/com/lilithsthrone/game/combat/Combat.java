@@ -1257,7 +1257,7 @@ public enum Combat {
 				} else {
 					lustDamageDescription.append(
 						UtilText.parse(target,
-							"<b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>[npc.Namepos] desire for sex becomes too great to control!</b><br/>"));
+							"<b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>[npc.Her] desire for sex becomes too great to control!</b><br/>"));
 				}
 			}
 			

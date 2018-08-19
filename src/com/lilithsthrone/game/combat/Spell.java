@@ -2424,7 +2424,7 @@ public enum Spell {
 				} else {
 					lustDamageDescription.append(
 						UtilText.parse(target,
-							"<b>[npc.She] gains " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust!</b></b><br/>"));
+							"<b>[npc.Name] gains " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust!</b></b><br/>"));
 				}
 			}
 			
@@ -2438,7 +2438,7 @@ public enum Spell {
 				} else {
 					lustDamageDescription.append(
 						UtilText.parse(target,
-							"<b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>[npc.Namepos] desire for sex becomes too great to control!</b><br/>"));
+							"<b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>[npc.Her] desire for sex becomes too great to control!</b><br/>"));
 				}
 			}
 			
