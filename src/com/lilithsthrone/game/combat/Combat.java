@@ -1218,47 +1218,66 @@ public enum Combat {
 	
 	// Handle lust damage, replaces all target.incrementLust and thus, lustDamage should never equal 0
 	private static void dealLustDamage(GameCharacter attacker, float lustDamage, GameCharacter target) {
-		if(target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX)) {
-			if(target.isPlayer()) {
-				attackStringBuilder.append(
-						"<b>You take " + (lustDamage*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
-						+ lustDamage + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as you struggle to control your burning desire for sex!</b><br/>"
-					+ "</p>");
-			
-			} else {
-				attackStringBuilder.append(
-					UtilText.parse(target,
-						"<b>[npc.Name] takes " + (lustDamage*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and " 
-						+ lustDamage + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as [npc.she] struggles to control [npc.her] burning desire for sex!</b><br/>"
-					+ "</p>"));
-				
-			}
-
-			target.incrementHealth(-lustDamage*2);
-			target.incrementMana(-lustDamage);
-			
+		float dealtLustDamage, overflowLust = target.incrementLustRetOverflow(lustDamage);
+		
+		if(overflowLust > 0) {
+			dealtLustDamage = lustDamage - overflowLust;
+			dealtLustDamage = (Math.round(dealtLustDamage*10))/10f;
 		} else {
+			dealtLustDamage = lustDamage;
+		}
+		
+		if(dealtLustDamage > 0) {
 			if(attacker.isPlayer()) {
 				attackStringBuilder.append(
 					UtilText.parse(target,
-						"<b>[npc.Name] gains " + lustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as [npc.she] tries to resist your seductive display!</b><br/>"
-					+ "</p>"));
+						"<b>[npc.Name] gains " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as [npc.she] tries to resist your seductive display!</b><br/>"));
 				
 			} else if(target.isPlayer()) {
 				attackStringBuilder.append(
 					UtilText.parse(attacker,
-						"<b>You gain " + lustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as you try to resist [npc.her] seductive display!</b><br/>"
-					+ "</p>"));
+						"<b>You gain " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as you try to resist [npc.her] seductive display!</b><br/>"));
 				
 			} else {
 				attackStringBuilder.append(
 					UtilText.parse(attacker, target,
-						"<b>[npc2.Name] gains " + lustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as [npc2.she] tries to resist [npc1.namePos] seductive display!</b><br/>"
-					+ "</p>"));
+						"<b>[npc2.Name] gains " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as [npc2.she] tries to resist [npc1.namePos] seductive display!</b><br/>"));
 			}
-			
-			target.incrementLust(lustDamage);
 		}
+		
+		if (!target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX) && StatusEffect.DESPERATE_FOR_SEX.isConditionsMet(target)) {
+			target.addStatusEffect(StatusEffect.DESPERATE_FOR_SEX, -1);
+			
+			if(target.isPlayer()) {
+				attackStringBuilder.append(
+						"<b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>Your desire for sex becomes too great to control!</b><br/>");
+			
+			} else {
+				attackStringBuilder.append(
+					UtilText.parse(target,
+						"<b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>[npc.Namepos] desire for sex becomes too great to control!</b><br/>"));
+			}
+		}
+		
+		if(target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX) && overflowLust > 0) {
+			if(target.isPlayer()) {
+				attackStringBuilder.append(
+						"<b>You take " + (overflowLust*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
+						+ overflowLust + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as you struggle to control your burning desire for sex!</b><br/>");
+			
+			} else {
+				attackStringBuilder.append(
+					UtilText.parse(target,
+						"<b>[npc.Name] takes " + (overflowLust*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and " 
+						+ overflowLust + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as [npc.she] struggles to control [npc.her] burning desire for sex!</b><br/>"));
+			}
+
+			target.incrementHealth(-overflowLust*2);
+			target.incrementMana(-overflowLust);
+			
+		}
+		
+		attackStringBuilder.append("</p>");
 	}
 	
 	// Calculations for seduction attack:

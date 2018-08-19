@@ -2404,43 +2404,61 @@ public enum Spell {
 	}
 
 	// Handle lust damage, replaces all target.incrementLust and thus, lustDamage should never equal 0
-	protected void dealLustDamage(GameCharacter caster, float damage, GameCharacter target) {
-		if(target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX)) {
-			if(target.isPlayer()){
-				descriptionSB.append(
-						"<b>You take " + (damage*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
-							+ damage + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as you struggle to control your burning desire for sex!</b>"
-						+ "</p>");
-				
-			} else {
-				descriptionSB.append(
-						UtilText.parse(target,
-							"<b>[npc.Name] takes " + (damage*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
-							+ damage + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as [npc.she] struggles to control [npc.her] burning desire for sex!</b>"
-						+ "</p>"));
-				
-			}
-			
-			target.incrementHealth(-damage*2);
-			target.incrementMana(-damage);
-			
+	protected void dealLustDamage(GameCharacter caster, float lustDamage, GameCharacter target) {
+		float dealtLustDamage, overflowLust = target.incrementLustRetOverflow(lustDamage);
+		
+		if(overflowLust > 0) {
+			dealtLustDamage = lustDamage - overflowLust;
+			dealtLustDamage = (Math.round(dealtLustDamage*10))/10f;
 		} else {
-			if(target.isPlayer()) {
-				descriptionSB.append(
-							"<b>You gain " + damage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust!</b>"
-						+ "</p>");
-				
-			} else {
-				descriptionSB.append(
-						UtilText.parse(target,
-							"<b>[npc.She] gains " + damage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust!</b>"
-						+ "</p>"));
-				
-			}
-			
-			target.incrementLust(damage);
+			dealtLustDamage = lustDamage;
 		}
 		
+		if(dealtLustDamage > 0) {
+			if(target.isPlayer()) {
+				descriptionSB.append(
+						"<b>You gain " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust!</b></b><br/>");
+				
+			} else {
+				descriptionSB.append(
+						UtilText.parse(target,
+						"<b>[npc.She] gains " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust!</b></b><br/>"));
+			}
+		}
+		
+		if(!target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX) && StatusEffect.DESPERATE_FOR_SEX.isConditionsMet(target)) {
+			target.addStatusEffect(StatusEffect.DESPERATE_FOR_SEX, -1);
+			
+			if(target.isPlayer()) {
+				descriptionSB.append(
+						"<b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>Your desire for sex becomes too great to control!</b><br/>");
+			
+			} else {
+				descriptionSB.append(
+					UtilText.parse(target,
+						"<b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>[npc.Namepos] desire for sex becomes too great to control!</b><br/>"));
+			}
+		}
+		
+		if(target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX) && overflowLust > 0) {
+			if(target.isPlayer()){
+				descriptionSB.append(
+						"<b>You take " + (overflowLust*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
+						+ overflowLust + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as you struggle to control your burning desire for sex!</b><br/>");
+				
+			} else {
+				descriptionSB.append(
+						UtilText.parse(target,
+						"<b>[npc.Name] takes " + (overflowLust*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
+						+ overflowLust + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as [npc.she] struggles to control [npc.her] burning desire for sex!</b><br/>"));
+			}
+			
+			target.incrementHealth(-overflowLust*2);
+			target.incrementMana(-overflowLust);
+			
+		}
+
+		descriptionSB.append("</p>");
 	}
 	
 	public abstract String applyEffect(GameCharacter caster, GameCharacter target, boolean isHit, boolean isCritical);

@@ -11395,6 +11395,26 @@ public abstract class GameCharacter implements XMLSaving {
 		return setLust(getLust() + increment);
 	}
 	
+	public float incrementLustRetOverflow(float increment) {
+		if (getLust() >= 100) {
+			return increment;
+		}
+		
+		float overflow = getLust() + increment - 100;
+		
+		if (overflow > 0) {
+			setLust(100);
+
+			// Round float value to nearest 1 decimal place:
+			overflow = (Math.round(overflow*10))/10f;
+			
+			return overflow;
+		} else {
+			incrementLust(increment);
+			return 0;
+		}
+	}
+	
 	public boolean isVulnerableToLustLoss() {
 		return this.getAttributeValue(Attribute.MAJOR_ARCANE) < IntelligenceLevel.TWO_SMART.getMinimumValue();
 	}
