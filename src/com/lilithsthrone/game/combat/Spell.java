@@ -2408,58 +2408,58 @@ public enum Spell {
 		StringBuilder lustDamageDescription = new StringBuilder();
 		float dealtLustDamage, overflowLust = target.incrementLustRetOverflow(lustDamage);
 		
-		if(overflowLust > 0) {
-			dealtLustDamage = lustDamage - overflowLust;
-			dealtLustDamage = (Math.round(dealtLustDamage*10))/10f;
+		if(!target.isVulnerableToLustLoss()) {
+			if(overflowLust > 0) {
+				dealtLustDamage = lustDamage - overflowLust;
+				dealtLustDamage = (Math.round(dealtLustDamage*10))/10f;
+			} else {
+				dealtLustDamage = lustDamage;
+			}
+			
+			if(dealtLustDamage > 0) {
+				if(target.isPlayer()) {
+					lustDamageDescription.append(
+							"<b>You gain " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust!</b></b><br/>");
+					
+				} else {
+					lustDamageDescription.append(
+						UtilText.parse(target,
+							"<b>[npc.She] gains " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust!</b></b><br/>"));
+				}
+			}
+			
+			if(!target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX) && StatusEffect.DESPERATE_FOR_SEX.isConditionsMet(target)) {
+				target.addStatusEffect(StatusEffect.DESPERATE_FOR_SEX, -1);
+				
+				if(target.isPlayer()) {
+					lustDamageDescription.append(
+							"<b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>Your desire for sex becomes too great to control!</b><br/>");
+				
+				} else {
+					lustDamageDescription.append(
+						UtilText.parse(target,
+							"<b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>[npc.Namepos] desire for sex becomes too great to control!</b><br/>"));
+				}
+			}
+			
+			if(target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX) && overflowLust > 0) {
+				if(target.isPlayer()){
+					lustDamageDescription.append(
+							"<b>You take " + (overflowLust*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
+							+ overflowLust + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as you struggle to control your burning desire for sex!</b><br/>");
+					
+				} else {
+					lustDamageDescription.append(
+						UtilText.parse(target,
+							"<b>[npc.Name] takes " + (overflowLust*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
+							+ overflowLust + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as [npc.she] struggles to control [npc.her] burning desire for sex!</b><br/>"));
+				}
+				
+				target.incrementHealth(-overflowLust*2);
+				target.incrementMana(-overflowLust);
+				
+			}
 		} else {
-			dealtLustDamage = lustDamage;
-		}
-		
-		if(dealtLustDamage > 0) {
-			if(target.isPlayer()) {
-				lustDamageDescription.append(
-						"<b>You gain " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust!</b></b><br/>");
-				
-			} else {
-				lustDamageDescription.append(
-					UtilText.parse(target,
-						"<b>[npc.She] gains " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust!</b></b><br/>"));
-			}
-		}
-		
-		if(!target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX) && StatusEffect.DESPERATE_FOR_SEX.isConditionsMet(target)) {
-			target.addStatusEffect(StatusEffect.DESPERATE_FOR_SEX, -1);
-			
-			if(target.isPlayer()) {
-				lustDamageDescription.append(
-						"<b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>Your desire for sex becomes too great to control!</b><br/>");
-			
-			} else {
-				lustDamageDescription.append(
-					UtilText.parse(target,
-						"<b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>[npc.Namepos] desire for sex becomes too great to control!</b><br/>"));
-			}
-		}
-		
-		if(target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX) && overflowLust > 0) {
-			if(target.isPlayer()){
-				lustDamageDescription.append(
-						"<b>You take " + (overflowLust*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
-						+ overflowLust + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as you struggle to control your burning desire for sex!</b><br/>");
-				
-			} else {
-				lustDamageDescription.append(
-					UtilText.parse(target,
-						"<b>[npc.Name] takes " + (overflowLust*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
-						+ overflowLust + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as [npc.she] struggles to control [npc.her] burning desire for sex!</b><br/>"));
-			}
-			
-			target.incrementHealth(-overflowLust*2);
-			target.incrementMana(-overflowLust);
-			
-		}
-		
-		if(lustDamageDescription.length() == 0) { // should only happen to characters who lose at 100 lust
 			if(target.isPlayer()) {
 				lustDamageDescription.append(
 						"<b>You gain " + lustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust!</b></b><br/>");
