@@ -7363,10 +7363,10 @@ public enum StatusEffect {
 			target.incrementHealth(-damage);
 
 			if (target.isPlayer()) {
-				return "You take <b>" + damage + "</b> [style.boldFire(Fire Damage)]!";
+				return "<b>You take " + damage + " " + Attribute.DAMAGE_FIRE.getColouredName("b") + "!</b>";
 				
 			} else {
-				return "[npc.Name] takes <b>" + damage + "</b> [style.boldFire(Fire Damage)]!";
+				return "<b>[npc.Name] takes " + damage + " " + Attribute.DAMAGE_FIRE.getColouredName("b") + "!</b>";
 			}
 		}
 
@@ -8245,10 +8245,10 @@ public enum StatusEffect {
 			target.incrementHealth(-damage);
 
 			if (target.isPlayer()) {
-				return "You take <b>" + damage + "</b> "+Attribute.DAMAGE_POISON.getColouredName("b")+"!";
+				return "<b>You take " + damage + " " + Attribute.DAMAGE_POISON.getColouredName("b") + "!</b>";
 				
 			} else {
-				return "[npc.Name] takes <b>" + damage + "</b> "+Attribute.DAMAGE_POISON.getColouredName("b")+"!";
+				return "<b>[npc.Name] takes " + damage + " " + Attribute.DAMAGE_POISON.getColouredName("b") + "!</b>";
 			}
 		}
 
@@ -8292,10 +8292,10 @@ public enum StatusEffect {
 			target.incrementHealth(-damage);
 
 			if (target.isPlayer()) {
-				return "You take <b>" + damage + "</b> "+Attribute.DAMAGE_POISON.getColouredName("b")+"!";
+				return "<b>You take " + damage + " " + Attribute.DAMAGE_POISON.getColouredName("b") + "!</b>";
 				
 			} else {
-				return "[npc.Name] takes <b>" + damage + "</b> "+Attribute.DAMAGE_POISON.getColouredName("b")+"!";
+				return "<b>[npc.Name] takes " + damage + " " + Attribute.DAMAGE_POISON.getColouredName("b") + "!</b>";
 			}
 		}
 
@@ -8344,10 +8344,10 @@ public enum StatusEffect {
 			target.incrementMana(-lustDamage);
 
 			if (target.isPlayer()) {
-				return "You take <b>" + damage + "</b> "+Attribute.DAMAGE_POISON.getColouredName("b")+" and lose <b>" + lustDamage + "</b> "+Attribute.MANA_MAXIMUM.getColouredName("b")+"!";
+				return "<b>You take " + damage + " " + Attribute.DAMAGE_POISON.getColouredName("b") + " and lose " + lustDamage + " " + Attribute.MANA_MAXIMUM.getColouredName("b") + "!</b>";
 				
 			} else {
-				return "[npc.Name] takes <b>" + damage + "</b> "+Attribute.DAMAGE_POISON.getColouredName("b")+" and loses <b>" + lustDamage + "</b> "+Attribute.MANA_MAXIMUM.getColouredName("b")+"!";
+				return "<b>[npc.Name] takes " + damage + " " + Attribute.DAMAGE_POISON.getColouredName("b") + " and loses " + lustDamage + " " + Attribute.MANA_MAXIMUM.getColouredName("b") + "!</b>";
 			}
 		}
 
@@ -8398,10 +8398,10 @@ public enum StatusEffect {
 			target.incrementMana(-lustDamage);
 			
 			if (target.isPlayer()) {
-				return "You take <b>" + damage + "</b> "+Attribute.DAMAGE_POISON.getColouredName("b")+" and lose <b>" + lustDamage + "</b> "+Attribute.MANA_MAXIMUM.getColouredName("b")+"!";
+				return "<b>You take " + damage + " " + Attribute.DAMAGE_POISON.getColouredName("b") + " and lose " + lustDamage + " " + Attribute.MANA_MAXIMUM.getColouredName("b") + "!</b>";
 				
 			} else {
-				return "[npc.Name] takes <b>" + damage + "</b> "+Attribute.DAMAGE_POISON.getColouredName("b")+" and loses <b>" + lustDamage + "</b> "+Attribute.MANA_MAXIMUM.getColouredName("b")+"!";
+				return "<b>[npc.Name] takes " + damage + " " + Attribute.DAMAGE_POISON.getColouredName("b") + " and loses " + lustDamage + " " + Attribute.MANA_MAXIMUM.getColouredName("b") + "!</b>";
 			}
 		}
 
@@ -8974,10 +8974,10 @@ public enum StatusEffect {
 			target.incrementHealth(-damage);
 
 			if (target.isPlayer()) {
-				return "You take <b>" + damage + "</b> "+Attribute.DAMAGE_PHYSICAL.getColouredName("b")+" as the Aftershock hits!";
+				return "<b>You take " + damage + " " + Attribute.DAMAGE_PHYSICAL.getColouredName("b") + " as the Aftershock hits!</b>";
 				
 			} else {
-				return "[npc.Name] takes <b>" + damage + "</b> "+Attribute.DAMAGE_PHYSICAL.getColouredName("b")+" as the Aftershock hits!";
+				return "<b>[npc.Name] takes " + damage + " " + Attribute.DAMAGE_PHYSICAL.getColouredName("b") + " as the Aftershock hits!</b>";
 			}
 		}
 
@@ -9010,10 +9010,10 @@ public enum StatusEffect {
 			target.incrementHealth(-damage);
 
 			if (target.isPlayer()) {
-				return "You take <b>" + damage + "</b> "+Attribute.DAMAGE_PHYSICAL.getColouredName("b")+"!";
+				return "<b>You take " + damage + " " + Attribute.DAMAGE_PHYSICAL.getColouredName("b") + "!</b>";
 				
 			} else {
-				return "[npc.Name] takes <b>" + damage + "</b> "+Attribute.DAMAGE_PHYSICAL.getColouredName("b")+"!";
+				return "<b>[npc.Name] takes " + damage + " " + Attribute.DAMAGE_PHYSICAL.getColouredName("b") + "!</b>";
 			}
 		}
 		
@@ -9057,10 +9057,10 @@ public enum StatusEffect {
 			target.incrementHealth(-damage);
 
 			if (target.isPlayer()) {
-				return "You take <b>" + damage + "</b> "+Attribute.DAMAGE_PHYSICAL.getColouredName("b")+"!";
+				return "<b>You take " + damage + " " + Attribute.DAMAGE_PHYSICAL.getColouredName("b") + "!</b>";
 				
 			} else {
-				return "[npc.Name] takes <b>" + damage + "</b> "+Attribute.DAMAGE_PHYSICAL.getColouredName("b")+"!";
+				return "<b>[npc.Name] takes " + damage + " " + Attribute.DAMAGE_PHYSICAL.getColouredName("b") + "!</b>";
 			}
 		}
 		
@@ -9104,10 +9104,10 @@ public enum StatusEffect {
 			target.incrementHealth(-damage);
 			
 			if (target.isPlayer()) {
-				return "You take <b>" + damage + "</b> "+Attribute.DAMAGE_PHYSICAL.getColouredName("b")+"!";
+				return "<b>You take " + damage + " " + Attribute.DAMAGE_PHYSICAL.getColouredName("b") + "!</b>";
 				
 			} else {
-				return "[npc.Name] takes <b>" + damage + "</b> "+Attribute.DAMAGE_PHYSICAL.getColouredName("b")+"!";
+				return "<b>[npc.Name] takes " + damage + " " + Attribute.DAMAGE_PHYSICAL.getColouredName("b") + "!</b>";
 			}
 		}
 		
@@ -9264,14 +9264,14 @@ public enum StatusEffect {
 					damage = 1;
 				}
 				Main.game.getPlayer().incrementHealth(-damage);
-				sb.append("You take <b>" + damage + "</b> "+Attribute.DAMAGE_PHYSICAL.getColouredName("b")+" as the Stone Shell explodes!");
+				sb.append("<b>You take " + damage + " " + Attribute.DAMAGE_PHYSICAL.getColouredName("b") + " as the Stone Shell explodes!</b>");
 				for(NPC combatant : Combat.getAllies()) {
 					damage = (int) Math.round(10 * (1-(Util.getModifiedDropoffValue(combatant.getAttributeValue(Attribute.RESISTANCE_PHYSICAL), 100)/100f)));
 					if (damage < 1) {
 						damage = 1;
 					}
 					combatant.incrementHealth(-damage);
-					sb.append(UtilText.parse(combatant, "<br/>[npc.Name] takes <b>" + damage + "</b> "+Attribute.DAMAGE_PHYSICAL.getColouredName("b")+" as the Stone Shell explodes!"));
+					sb.append(UtilText.parse(combatant, "<br/><b>[npc.Name] takes " + damage + " " + Attribute.DAMAGE_PHYSICAL.getColouredName("b") + " as the Stone Shell explodes!</b>"));
 				}
 			} else {
 				boolean first=true;
@@ -9281,7 +9281,7 @@ public enum StatusEffect {
 						damage = 1;
 					}
 					combatant.incrementHealth(-damage);
-					sb.append(UtilText.parse(combatant, (first?"":"<br/>")+"[npc.Name] takes <b>" + damage + "</b> "+Attribute.DAMAGE_PHYSICAL.getColouredName("b")+" as the Stone Shell explodes!"));
+					sb.append(UtilText.parse(combatant, (first?"":"<br/>")+"<b>[npc.Name] takes " + damage + " " + Attribute.DAMAGE_PHYSICAL.getColouredName("b") + " as the Stone Shell explodes!</b>"));
 					first=false;
 				}
 			}
