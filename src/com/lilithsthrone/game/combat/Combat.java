@@ -1245,7 +1245,7 @@ public enum Combat {
 			}
 		}
 		
-		if (!target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX) && StatusEffect.DESPERATE_FOR_SEX.isConditionsMet(target)) {
+		if(!target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX) && StatusEffect.DESPERATE_FOR_SEX.isConditionsMet(target)) {
 			target.addStatusEffect(StatusEffect.DESPERATE_FOR_SEX, -1);
 			
 			if(target.isPlayer()) {

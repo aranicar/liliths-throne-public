@@ -71,7 +71,6 @@ import com.lilithsthrone.world.places.PlaceType;
  * @author Innoxia
  */
 public enum StatusEffect {
-// TODO go through and find all DAMAGE_LUST.getColouredName and replace with gain lust instead of taking lust damage
 	// Attribute-related status effects:
 	// Strength:
 	PHYSIQUE_PERK_0(
@@ -9752,13 +9751,12 @@ public enum StatusEffect {
 			if (damage < 1) {
 				damage = 1;
 			}
-			target.incrementLust(damage);
 
 			if (target.isPlayer()) {
-				return "You gain <b>" + damage + "</b> <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as your mind is filled with arousing thoughts!";
+				return dealLustDamage(target, damage) + " as your mind is filled with arousing thoughts!</b>";
 				
 			} else {
-				return "[npc.Name] gains <b>" + damage + "</b> <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as [npc.namepos] mind is filled with arousing thoughts!";
+				return dealLustDamage(target, damage) + " as [npc.her] mind is filled with arousing thoughts!</b>";
 			}
 		}
 		
@@ -9799,13 +9797,12 @@ public enum StatusEffect {
 			if (damage < 1) {
 				damage = 1;
 			}
-			target.incrementLust(damage);
 
 			if (target.isPlayer()) {
-				return "You gain <b>" + damage + "</b> <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as your mind is filled with arousing thoughts!";
+				return dealLustDamage(target, damage) + " as your mind is filled with arousing thoughts!</b>";
 				
 			} else {
-				return "[npc.Name] gains <b>" + damage + "</b> <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as [npc.namepos] mind is filled with arousing thoughts!";
+				return dealLustDamage(target, damage) + " as [npc.her] mind is filled with arousing thoughts!</b>";
 			}
 		}
 		
@@ -9849,8 +9846,8 @@ public enum StatusEffect {
 					if (damage < 1) {
 						damage = 1;
 					}
-					combatant.incrementLust(damage);
-					sb.append(UtilText.parse(combatant, (Combat.getEnemies().size()>1?"<br/>":"")+"[npc.Name] takes <b>" + damage + "</b> "+Attribute.DAMAGE_LUST.getColouredName("b")+"!"));
+					// TODO check to see this works
+					sb.append(UtilText.parse(combatant, (Combat.getEnemies().size() > 1 ? "<br/>" : "") + dealLustDamage(combatant, damage) + "!</b>"));
 				}
 				
 			} else {
@@ -9858,16 +9855,16 @@ public enum StatusEffect {
 				if (damage < 1) {
 					damage = 1;
 				}
-				Main.game.getPlayer().incrementLust(damage);
-				sb.append((Combat.getAllies().size()>=1?"<br/>":"")+"You take <b>" + damage + "</b> "+Attribute.DAMAGE_LUST.getColouredName("b")+"!");
+				
+				sb.append((Combat.getAllies().size() >= 1 ? "<br/>" : "") + dealLustDamage(Main.game.getPlayer(), damage) + "!</b>");
 				
 				for(NPC combatant : Combat.getAllies()) {
 					damage = (int) Math.round(15 * (1-(Util.getModifiedDropoffValue(combatant.getAttributeValue(Attribute.RESISTANCE_LUST), 100)/100f)));
 					if (damage < 1) {
 						damage = 1;
 					}
-					combatant.incrementLust(damage);
-					sb.append(UtilText.parse(combatant, "<br/>[npc.Name] takes <b>" + damage + "</b> "+Attribute.DAMAGE_LUST.getColouredName("b")+"!"));
+
+					sb.append(UtilText.parse(combatant, "<br/>" + dealLustDamage(combatant, damage) + "!</b>"));
 				}
 			}
 			
@@ -10223,13 +10220,13 @@ public enum StatusEffect {
 			if (damage < 1) {
 				damage = 1;
 			}
-			randomEnemy.incrementLust(damage);
+			// TODO check that this works
 
 			if (randomEnemy.isPlayer()) {
-				return "You take <b>" + damage + "</b> "+Attribute.DAMAGE_LUST.getColouredName("b")+"!";
+				return dealLustDamage(randomEnemy, damage) + "!</b>";
 				
-			} else {
-				return UtilText.parse(randomEnemy, "[npc.Name] takes <b>" + damage + "</b> "+Attribute.DAMAGE_LUST.getColouredName("b")+"!");
+			} else { // kept here for future text customization
+				return dealLustDamage(randomEnemy, damage) + "!</b>";
 			}
 		}
 		
@@ -11739,6 +11736,74 @@ public enum StatusEffect {
 
 	public String getSVGString(GameCharacter owner) {
 		return SVGString;
+	}
+	
+	// Handle lust damage, replaces all target.incrementLust and thus, lustDamage should never equal 0
+	private static String dealLustDamage(GameCharacter target, float lustDamage) {
+		StringBuilder message = new StringBuilder();
+		float dealtLustDamage, overflowLust = target.incrementLustRetOverflow(lustDamage);
+		
+		if(overflowLust > 0) {
+			dealtLustDamage = lustDamage - overflowLust;
+			dealtLustDamage = (Math.round(dealtLustDamage*10))/10f;
+		} else {
+			dealtLustDamage = lustDamage;
+		}
+		
+		if(dealtLustDamage > 0) {
+			if(target.isPlayer()) {
+				message.append(
+						"<b>You gain " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust");
+				
+			} else {
+				message.append(
+					UtilText.parse(target,
+						"<b>[npc.Name] gains " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust"));
+			}
+		}
+		
+		if(!target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX) && StatusEffect.DESPERATE_FOR_SEX.isConditionsMet(target)) {
+			target.addStatusEffect(StatusEffect.DESPERATE_FOR_SEX, -1);
+			
+			/*if(target.isPlayer()) {
+				message.append(
+						"<b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>Your desire for sex becomes too great to control!</b><br/>");
+			
+			} else {
+				message.append(
+					UtilText.parse(target,
+						"<b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>[npc.Namepos] desire for sex becomes too great to control!</b><br/>"));
+			}*/
+		}
+		
+		if(target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX) && overflowLust > 0) {
+			if(dealtLustDamage > 0) {
+				if(target.isPlayer()) {
+					message.append(" and take ");
+				
+				} else {
+					message.append(" and takes ");
+				}
+			} else {
+				if(target.isPlayer()) {
+					message.append("<b>You take ");
+				
+				} else {
+					message.append(
+						UtilText.parse(target, "<b>[npc.Name] takes "));
+				}
+			}
+			
+			message.append(
+						(overflowLust*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
+						+ overflowLust + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b>");
+
+			target.incrementHealth(-overflowLust*2);
+			target.incrementMana(-overflowLust);
+			
+		}
+		
+		return message.toString();
 	}
 	
 	// Helper methods for sex effects:

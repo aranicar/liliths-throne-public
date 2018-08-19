@@ -2353,7 +2353,7 @@ public enum SpecialAttack {
 				
 			} else {
 				descriptionSB.append(
-						UtilText.parse(target,
+					UtilText.parse(target,
 						"<b>[npc.Name] gains " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust!</b></b><br/>"));
 			}
 		}
@@ -2380,7 +2380,7 @@ public enum SpecialAttack {
 				
 			} else {
 				descriptionSB.append(
-						UtilText.parse(target,
+					UtilText.parse(target,
 						"<b>[npc.Name] takes " + (overflowLust*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
 						+ overflowLust + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as [npc.she] struggles to control [npc.her] burning desire for sex!</b><br/>"));
 			}
