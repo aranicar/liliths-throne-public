@@ -1217,7 +1217,8 @@ public enum Combat {
 	}
 	
 	// Handle lust damage, replaces all target.incrementLust and thus, lustDamage should never equal 0
-	private static void dealLustDamage(GameCharacter attacker, float lustDamage, GameCharacter target) {
+	private static void dealLustDamage(GameCharacter attacker, GameCharacter target, float lustDamage) {
+		StringBuilder lustDamageDescription = new StringBuilder();
 		float dealtLustDamage, overflowLust = target.incrementLustRetOverflow(lustDamage);
 		
 		if(overflowLust > 0) {
@@ -1229,17 +1230,17 @@ public enum Combat {
 		
 		if(dealtLustDamage > 0) {
 			if(attacker.isPlayer()) {
-				attackStringBuilder.append(
+				lustDamageDescription.append(
 					UtilText.parse(target,
 						"<b>[npc.Name] gains " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as [npc.she] tries to resist your seductive display!</b><br/>"));
 				
 			} else if(target.isPlayer()) {
-				attackStringBuilder.append(
+				lustDamageDescription.append(
 					UtilText.parse(attacker,
 						"<b>You gain " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as you try to resist [npc.her] seductive display!</b><br/>"));
 				
 			} else {
-				attackStringBuilder.append(
+				lustDamageDescription.append(
 					UtilText.parse(attacker, target,
 						"<b>[npc2.Name] gains " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as [npc2.she] tries to resist [npc1.namePos] seductive display!</b><br/>"));
 			}
@@ -1249,11 +1250,11 @@ public enum Combat {
 			target.addStatusEffect(StatusEffect.DESPERATE_FOR_SEX, -1);
 			
 			if(target.isPlayer()) {
-				attackStringBuilder.append(
+				lustDamageDescription.append(
 						"<b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>Your desire for sex becomes too great to control!</b><br/>");
 			
 			} else {
-				attackStringBuilder.append(
+				lustDamageDescription.append(
 					UtilText.parse(target,
 						"<b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>[npc.Namepos] desire for sex becomes too great to control!</b><br/>"));
 			}
@@ -1261,12 +1262,12 @@ public enum Combat {
 		
 		if(target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX) && overflowLust > 0) {
 			if(target.isPlayer()) {
-				attackStringBuilder.append(
+				lustDamageDescription.append(
 						"<b>You take " + (overflowLust*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
 						+ overflowLust + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as you struggle to control your burning desire for sex!</b><br/>");
 			
 			} else {
-				attackStringBuilder.append(
+				lustDamageDescription.append(
 					UtilText.parse(target,
 						"<b>[npc.Name] takes " + (overflowLust*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and " 
 						+ overflowLust + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as [npc.she] struggles to control [npc.her] burning desire for sex!</b><br/>"));
@@ -1277,7 +1278,25 @@ public enum Combat {
 			
 		}
 		
-		attackStringBuilder.append("</p>");
+		if(lustDamageDescription.length() == 0) { // should only happen to characters who lose at 100 lust
+			if(attacker.isPlayer()) {
+				lustDamageDescription.append(
+					UtilText.parse(target,
+						"<b>[npc.Name] gains " + lustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as [npc.she] tries to resist your seductive display!</b><br/>"));
+				
+			} else if(target.isPlayer()) {
+				lustDamageDescription.append(
+					UtilText.parse(attacker,
+						"<b>You gain " + lustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as you try to resist [npc.her] seductive display!</b><br/>"));
+				
+			} else {
+				lustDamageDescription.append(
+					UtilText.parse(attacker, target,
+						"<b>[npc2.Name] gains " + lustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b> as [npc2.she] tries to resist [npc1.namePos] seductive display!</b><br/>"));
+			}
+		}
+		
+		attackStringBuilder.append(lustDamageDescription.toString() + "</p>");
 	}
 	
 	// Calculations for seduction attack:
@@ -1312,7 +1331,7 @@ public enum Combat {
 				}
 			}
 			
-			dealLustDamage(attacker, lustDamage, target); // build last part of description
+			dealLustDamage(attacker, target, lustDamage); // build last part of description
 		}
 			
 		if(attacker.hasStatusEffect(StatusEffect.TELEPATHIC_COMMUNICATION_POWER_OF_SUGGESTION)) {

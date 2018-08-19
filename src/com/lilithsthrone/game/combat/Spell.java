@@ -1424,7 +1424,7 @@ public enum Spell {
 						}
 					}
 					
-					dealLustDamage(caster, damage, target); // build last part of description
+					dealLustDamage(caster, target, damage); // build last part of description
 				}
 				
 				if(caster.hasSpellUpgrade(SpellUpgrade.ARCANE_AROUSAL_2)) {
@@ -2404,7 +2404,8 @@ public enum Spell {
 	}
 
 	// Handle lust damage, replaces all target.incrementLust and thus, lustDamage should never equal 0
-	protected void dealLustDamage(GameCharacter caster, float lustDamage, GameCharacter target) {
+	protected void dealLustDamage(GameCharacter caster, GameCharacter target, float lustDamage) {
+		StringBuilder lustDamageDescription = new StringBuilder();
 		float dealtLustDamage, overflowLust = target.incrementLustRetOverflow(lustDamage);
 		
 		if(overflowLust > 0) {
@@ -2416,11 +2417,11 @@ public enum Spell {
 		
 		if(dealtLustDamage > 0) {
 			if(target.isPlayer()) {
-				descriptionSB.append(
+				lustDamageDescription.append(
 						"<b>You gain " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust!</b></b><br/>");
 				
 			} else {
-				descriptionSB.append(
+				lustDamageDescription.append(
 					UtilText.parse(target,
 						"<b>[npc.She] gains " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust!</b></b><br/>"));
 			}
@@ -2430,11 +2431,11 @@ public enum Spell {
 			target.addStatusEffect(StatusEffect.DESPERATE_FOR_SEX, -1);
 			
 			if(target.isPlayer()) {
-				descriptionSB.append(
+				lustDamageDescription.append(
 						"<b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>Your desire for sex becomes too great to control!</b><br/>");
 			
 			} else {
-				descriptionSB.append(
+				lustDamageDescription.append(
 					UtilText.parse(target,
 						"<b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>[npc.Namepos] desire for sex becomes too great to control!</b><br/>"));
 			}
@@ -2442,12 +2443,12 @@ public enum Spell {
 		
 		if(target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX) && overflowLust > 0) {
 			if(target.isPlayer()){
-				descriptionSB.append(
+				lustDamageDescription.append(
 						"<b>You take " + (overflowLust*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
 						+ overflowLust + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as you struggle to control your burning desire for sex!</b><br/>");
 				
 			} else {
-				descriptionSB.append(
+				lustDamageDescription.append(
 					UtilText.parse(target,
 						"<b>[npc.Name] takes " + (overflowLust*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
 						+ overflowLust + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as [npc.she] struggles to control [npc.her] burning desire for sex!</b><br/>"));
@@ -2457,8 +2458,20 @@ public enum Spell {
 			target.incrementMana(-overflowLust);
 			
 		}
+		
+		if(lustDamageDescription.length() == 0) { // should only happen to characters who lose at 100 lust
+			if(target.isPlayer()) {
+				lustDamageDescription.append(
+						"<b>You gain " + lustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust!</b></b><br/>");
+				
+			} else {
+				lustDamageDescription.append(
+					UtilText.parse(target,
+						"<b>[npc.She] gains " + lustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust!</b></b><br/>"));
+			}
+		}
 
-		descriptionSB.append("</p>");
+		descriptionSB.append(lustDamageDescription.toString() + "</p>");
 	}
 	
 	public abstract String applyEffect(GameCharacter caster, GameCharacter target, boolean isHit, boolean isCritical);
@@ -2614,9 +2627,9 @@ public enum Spell {
 	protected String applyDamage(GameCharacter caster, GameCharacter target, float damage) {
 		if(damage==0) {
 			if(target.isPlayer()) {
-				return ("<p>You are completely [style.boldExcellent(immune)] to "+DamageType.LUST.getName()+" damage!</p>");
+				return ("<p>You are completely [style.boldExcellent(immune)] to "+damageType.getMultiplierAttribute().getColouredName("b")+" !</p>");
 			} else {
-				return (UtilText.parse(target,"<p>[npc.Name] appears to be completely [style.boldExcellent(immune)] to "+DamageType.LUST.getName()+" damage!</p>"));
+				return (UtilText.parse(target,"<p>[npc.Name] appears to be completely [style.boldExcellent(immune)] to "+damageType.getMultiplierAttribute().getColouredName("b")+" !</p>"));
 			}
 			
 		} else {
@@ -2629,7 +2642,7 @@ public enum Spell {
 
 		if (this.getStatusEffects(caster, target, isCritical) != null && !this.getStatusEffects(caster, target, isCritical).isEmpty() && isHit) {
 			damageCostDescriptionSB.append(
-					"<p>"
+					"<p><b>"
 						+UtilText.parse(target,
 								(!target.isPlayer()
 									? "[npc.Name] is now "
@@ -2655,7 +2668,7 @@ public enum Spell {
 						+ " of <b style='color:" + seEntry.getKey().getColour().toWebHexString() + ";'>" + seEntry.getKey().getName(target) + "</b>");
 				i++;
 			}
-			damageCostDescriptionSB.append(".</p>");
+			damageCostDescriptionSB.append(".</b></p>");
 		}
 		
 		return damageCostDescriptionSB.toString();

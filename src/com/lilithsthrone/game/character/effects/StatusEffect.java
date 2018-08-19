@@ -9846,7 +9846,7 @@ public enum StatusEffect {
 					if (damage < 1) {
 						damage = 1;
 					}
-					// TODO check to see this works
+
 					sb.append(UtilText.parse(combatant, (Combat.getEnemies().size() > 1 ? "<br/>" : "") + dealLustDamage(combatant, damage) + "!</b>"));
 				}
 				
@@ -11753,27 +11753,17 @@ public enum StatusEffect {
 		if(dealtLustDamage > 0) {
 			if(target.isPlayer()) {
 				message.append(
-						"<b>You gain " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust");
+						"<b>You gain " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b>");
 				
 			} else {
 				message.append(
 					UtilText.parse(target,
-						"<b>[npc.Name] gains " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust"));
+						"<b>[npc.Name] gains " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b>"));
 			}
 		}
 		
 		if(!target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX) && StatusEffect.DESPERATE_FOR_SEX.isConditionsMet(target)) {
 			target.addStatusEffect(StatusEffect.DESPERATE_FOR_SEX, -1);
-			
-			/*if(target.isPlayer()) {
-				message.append(
-						"<b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>Your desire for sex becomes too great to control!</b><br/>");
-			
-			} else {
-				message.append(
-					UtilText.parse(target,
-						"<b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>[npc.Namepos] desire for sex becomes too great to control!</b><br/>"));
-			}*/
 		}
 		
 		if(target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX) && overflowLust > 0) {
@@ -11801,6 +11791,18 @@ public enum StatusEffect {
 			target.incrementHealth(-overflowLust*2);
 			target.incrementMana(-overflowLust);
 			
+		}
+		
+		if(message.length() == 0) { // should only happen to characters who lose at 100 lust
+			if(target.isPlayer()) {
+				message.append(
+						"<b>You gain " + lustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b>");
+				
+			} else {
+				message.append(
+					UtilText.parse(target,
+						"<b>[npc.Name] gains " + lustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust</b>"));
+			}
 		}
 		
 		return message.toString();

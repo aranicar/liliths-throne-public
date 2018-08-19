@@ -2336,7 +2336,8 @@ public enum SpecialAttack {
 	
 
 	// Handle lust damage, replaces all target.incrementLust and thus, lustDamage should never equal 0
-	protected void dealLustDamage(GameCharacter caster, float lustDamage, GameCharacter target) {
+	protected void dealLustDamage(GameCharacter caster, GameCharacter target, float lustDamage) {
+		StringBuilder lustDamageDescription = new StringBuilder();
 		float dealtLustDamage, overflowLust = target.incrementLustRetOverflow(lustDamage);
 		
 		if(overflowLust > 0) {
@@ -2348,11 +2349,11 @@ public enum SpecialAttack {
 
 		if(dealtLustDamage > 0) {
 			if(target.isPlayer()) {
-				descriptionSB.append(
+				lustDamageDescription.append(
 						"<b>You gain " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust!</b></b><br/>");
 				
 			} else {
-				descriptionSB.append(
+				lustDamageDescription.append(
 					UtilText.parse(target,
 						"<b>[npc.Name] gains " + dealtLustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust!</b></b><br/>"));
 			}
@@ -2362,11 +2363,11 @@ public enum SpecialAttack {
 			target.addStatusEffect(StatusEffect.DESPERATE_FOR_SEX, -1);
 			
 			if(target.isPlayer()) {
-				descriptionSB.append(
+				lustDamageDescription.append(
 						"<b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>Your desire for sex becomes too great to control!</b><br/>");
 			
 			} else {
-				descriptionSB.append(
+				lustDamageDescription.append(
 					UtilText.parse(target,
 						"<b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>[npc.Namepos] desire for sex becomes too great to control!</b><br/>"));
 			}
@@ -2374,12 +2375,12 @@ public enum SpecialAttack {
 		
 		if(target.hasStatusEffect(StatusEffect.DESPERATE_FOR_SEX) && overflowLust > 0) {
 			if(target.isPlayer()){
-				descriptionSB.append(
+				lustDamageDescription.append(
 						"<b>You take " + (overflowLust*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
 						+ overflowLust + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as you struggle to control your burning desire for sex!</b><br/>");
 				
 			} else {
-				descriptionSB.append(
+				lustDamageDescription.append(
 					UtilText.parse(target,
 						"<b>[npc.Name] takes " + (overflowLust*2) + " <b style='color:" + Colour.ATTRIBUTE_HEALTH.toWebHexString() + ";'>energy damage</b> and "
 						+ overflowLust + " <b style='color:" + Colour.ATTRIBUTE_MANA.toWebHexString() + ";'>aura damage</b> as [npc.she] struggles to control [npc.her] burning desire for sex!</b><br/>"));
@@ -2390,7 +2391,19 @@ public enum SpecialAttack {
 			
 		}
 
-		descriptionSB.append("</p>");
+		if(lustDamageDescription.length() == 0) { // should only happen to characters who lose at 100 lust
+			if(target.isPlayer()) {
+				lustDamageDescription.append(
+						"<b>You gain " + lustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust!</b></b><br/>");
+				
+			} else {
+				lustDamageDescription.append(
+					UtilText.parse(target,
+						"<b>[npc.Name] gains " + lustDamage + " <b style='color:" + Colour.DAMAGE_TYPE_LUST.toWebHexString() + ";'>lust!</b></b><br/>"));
+			}
+		}
+		
+		descriptionSB.append(lustDamageDescription.toString() + "</p>");
 	}
 	
 	protected String applySpecialSeduction(GameCharacter caster, GameCharacter target, Fetish fetishWeakness, String attackText) {
@@ -2458,7 +2471,7 @@ public enum SpecialAttack {
 				}	
 			}
 			
-			dealLustDamage(caster, damage, target); // build last part of description
+			dealLustDamage(caster, target, damage); // build last part of description
 		}
 		
 		Combat.setCooldown(caster, this, this.getCooldown()+1);
