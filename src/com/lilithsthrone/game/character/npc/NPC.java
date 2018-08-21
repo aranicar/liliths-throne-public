@@ -103,6 +103,10 @@ public abstract class NPC extends GameCharacter implements XMLSaving {
 	
 	protected boolean addedToContacts;
 	
+	// this is using the Attack enum to signify what TYPES of actions to do and does
+	//  not correspond with the specific action they will do
+	protected Attack orderedAttackMethod = Attack.NONE;
+	
 	public Set<NPCFlagValue> NPCFlagValues;
 	
 	protected Set<SexPositionSlot> sexPositionPreferences;
@@ -150,6 +154,8 @@ public abstract class NPC extends GameCharacter implements XMLSaving {
 		CharacterUtils.createXMLElementWithValue(doc, npcSpecific, "buyModifier", String.valueOf(buyModifier));
 		CharacterUtils.createXMLElementWithValue(doc, npcSpecific, "sellModifier", String.valueOf(sellModifier));
 		CharacterUtils.createXMLElementWithValue(doc, npcSpecific, "addedToContacts", String.valueOf(addedToContacts));
+		
+		CharacterUtils.createXMLElementWithValue(doc, npcSpecific, "orderedAttackMethod", orderedAttackMethod.toString());
 
 		Element valuesElement = doc.createElement("NPCValues");
 		npcSpecific.appendChild(valuesElement);
@@ -185,7 +191,10 @@ public abstract class NPC extends GameCharacter implements XMLSaving {
 			npc.setBuyModifier(Float.valueOf(((Element)npcSpecificElement.getElementsByTagName("buyModifier").item(0)).getAttribute("value")));
 			npc.setSellModifier(Float.valueOf(((Element)npcSpecificElement.getElementsByTagName("sellModifier").item(0)).getAttribute("value")));
 			npc.addedToContacts = (Boolean.valueOf(((Element)npcSpecificElement.getElementsByTagName("addedToContacts").item(0)).getAttribute("value")));
-		
+			
+			if(npcSpecificElement.getElementsByTagName("orderedAttackMethod").getLength() != 0) {
+				npc.orderedAttackMethod = Attack.valueOf(((Element)npcSpecificElement.getElementsByTagName("orderedAttackMethod").item(0)).getAttribute("value"));
+			}
 	
 			NodeList npcValues = ((Element) npcSpecificElement.getElementsByTagName("NPCValues").item(0)).getElementsByTagName("NPCValue");
 			for(int i = 0; i < npcValues.getLength(); i++){
@@ -377,6 +386,9 @@ public abstract class NPC extends GameCharacter implements XMLSaving {
 	}
 
 	// Combat:
+	public Attack getOrderedAttackMethod() {
+		return orderedAttackMethod;
+	}
 	
 	public List<Spell> getSpellsAbleToCast() {
 		List<Spell> spellsAbleToCast = new ArrayList<>();
@@ -443,6 +455,10 @@ public abstract class NPC extends GameCharacter implements XMLSaving {
 			}
 		}
 		
+		return Attack.MAIN;
+	}
+	
+	public Attack getIntelligentAttackType() { // TODO
 		return Attack.MAIN;
 	}
 	

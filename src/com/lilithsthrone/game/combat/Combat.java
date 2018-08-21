@@ -1530,53 +1530,76 @@ public enum Combat {
 							+ "</p>")));
 		} else {
 			// Calculate what attack to use based on NPC preference:
-			Attack opponentAttack = npc.attackType();
-			
-			if(opponentAttack==null) {
-				opponentAttack = Attack.MAIN;
-			}
-			
-			switch(opponentAttack){
-				case DUAL:
-					attackDual(npc);
-					break;
-					
-				case ESCAPE:
-					break;
-					
-				case MAIN:
-					attackMain(npc);
-					break;
-					
-				case NONE:
-					break;
-					
-				case OFFHAND:
-					attackOffhand(npc);
-					break;
-					
-				case SEDUCTION:
-					attackSeduction(npc);
-					break;
-					
-				case SPECIAL_ATTACK:
-					List<SpecialAttack> attacksAvailable = npc.getSpecialAttacksAbleToUse();
-					SpecialAttack specialAttack = attacksAvailable.get(Util.random.nextInt(attacksAvailable.size()));
-					attackSpecialAttack(npc, specialAttack);
-					break;
-					
-				case SPELL:
-					List<Spell> spellsAvailable = npc.getSpellsAbleToCast();
-					Spell spell = spellsAvailable.get(Util.random.nextInt(spellsAvailable.size()));
-					attackSpell(npc, spell);
-					break;
-					
-				case USE_ITEM:
-					break;
-					
-				default:
-					break;
+			Attack npcAttackOrders = npc.getOrderedAttackMethod();
+			if(npcAttackOrders == Attack.NONE) {
+				Attack opponentAttack = npc.attackType();
 				
+				if(opponentAttack==null) {
+					opponentAttack = Attack.MAIN;
+				}
+				
+				switch(opponentAttack){
+					case DUAL:
+						attackDual(npc);
+						break;
+						
+					case ESCAPE:
+						break;
+						
+					case MAIN:
+						attackMain(npc);
+						break;
+						
+					case NONE:
+						break;
+						
+					case OFFHAND:
+						attackOffhand(npc);
+						break;
+						
+					case SEDUCTION:
+						attackSeduction(npc);
+						break;
+						
+					case SPECIAL_ATTACK:
+						List<SpecialAttack> attacksAvailable = npc.getSpecialAttacksAbleToUse();
+						SpecialAttack specialAttack = attacksAvailable.get(Util.random.nextInt(attacksAvailable.size()));
+						attackSpecialAttack(npc, specialAttack);
+						break;
+						
+					case SPELL:
+						List<Spell> spellsAvailable = npc.getSpellsAbleToCast();
+						Spell spell = spellsAvailable.get(Util.random.nextInt(spellsAvailable.size()));
+						attackSpell(npc, spell);
+						break;
+						
+					case USE_ITEM:
+						break;
+						
+					default:
+						break;
+					
+				}
+			} else {
+				switch(npcAttackOrders) { // TODO
+					case MAIN: 
+						attackDual(npc);
+						break;
+						
+					case SEDUCTION:
+						break;
+						
+					case SPELL:
+						attackMain(npc);
+						break;
+						
+					case WAIT:
+						break;
+						
+					default:
+						break;
+				
+				//Attack opponentAttack = npc.getIntelligentAttackType();
 			}
 			
 //			if(isEnemyPartyDefeated()) {
